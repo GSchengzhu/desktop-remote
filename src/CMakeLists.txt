@@ -16,8 +16,18 @@ set(SCREEN_SERVER_SRC
     ./main.cpp
 )
 
+set(SCREEN_CLIENT
+    ./client.cpp
+    ./client.h
+    ./main_client.cpp
+)
+
+# add_definitions("-g")
 add_executable(TEST_SCREEN_X11 ${TEST_SCREEN_X11_SRC})
 target_link_libraries(TEST_SCREEN_X11 -lfmt -lX11 -lXext -lrt -lpng)
 
 add_executable(SCREEN_SERVER ${SCREEN_SERVER_SRC})
 target_link_libraries(SCREEN_SERVER -lfmt -lX11 -lXext -lrt -lpng -lpthread)
+
+add_executable(SCREEN_CLIENT ${SCREEN_CLIENT})
+target_link_libraries(SCREEN_CLIENT -lpng -lfmt)
