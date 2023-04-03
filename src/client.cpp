@@ -44,6 +44,7 @@ void CaptureClient::receivePicture()
         fmt::print("messagetype:{},width:{},height:{},row_stride:{}\n",
                     messageType,width,height,row_stride);
         savePicture(width,height,row_stride,data+sizeof(int)*4);
+        free(data);
     }
 
     return;
@@ -90,7 +91,7 @@ int CaptureClient::readDataByLength(int client_id,int length,char* retData)
         }
         
         readed += once_read;
-        fmt::print("readed:{} , length:{}\n",readed,length);
+        // fmt::print("readed:{} , length:{}\n",readed,length);
     }
 
     return readed;
@@ -119,14 +120,9 @@ bool CaptureClient::savePicture(int width,int height,int row_stride,char* data)
             *tmp++ |= 0xff000000;
         }
     }
-    fmt::print("save picture2\n");
     png_image_write_to_stdio(&pi,file,0,data,row_stride,NULL);
-    fmt::print("save picture3\n");
     fclose(file);
 
-    FILE* cc = fopen("client.data","w");
-    fwrite(data,1,1024,cc);
-    fclose(cc);
     index_++;
     return true;   
 

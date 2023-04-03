@@ -9,6 +9,12 @@
 #include <string.h>
 #include <fmt/printf.h>
 #include <png.h>
+#include <signal.h>
+
+void sig_pipe_handle(int)
+{
+
+}
 
 CaptureServer::~CaptureServer()
 {
@@ -52,6 +58,10 @@ bool CaptureServer::init()
         return false;
     }
 
+// 
+    // sigaction(SIGPIPE,&(struct sigaction){SIG_IGN},NULL);
+    signal(SIGPIPE,sig_pipe_handle);
+
     return true;
 }
 
@@ -62,13 +72,17 @@ void CaptureServer::start()
     while (true)
     {
         struct sockaddr_in client_addr;
-        socklen_t client_len;
+        socklen_t client_len = sizeof(client_addr);
 
         int client_id = accept(server_id,(struct sockaddr*)&client_addr,&client_len);
+        fmt::print("accept client id :{}\n",client_id);
         if(client_id > 0)
         {
             std::thread tmp(std::bind(&CaptureServer::sendPicture,this,client_id));
             tmp.detach();
+        }else
+        {
+            perror("accept error\n");
         }
     }  
 }
@@ -134,6 +148,7 @@ bool CaptureServer::write_(int client_id,char* data,int length)
     int writen = 0;
     while (writen != length)
     {
+        // sedn
         int write_once = write(client_id,data+writen,length);
         if(write_once < 0)
         {

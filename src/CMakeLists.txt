@@ -22,7 +22,7 @@ set(SCREEN_CLIENT
     ./main_client.cpp
 )
 
-# add_definitions("-g")
+add_definitions("-g")
 add_executable(TEST_SCREEN_X11 ${TEST_SCREEN_X11_SRC})
 target_link_libraries(TEST_SCREEN_X11 -lfmt -lX11 -lXext -lrt -lpng)
 
